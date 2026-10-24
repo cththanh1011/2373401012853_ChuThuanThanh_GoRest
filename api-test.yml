@@ -1,0 +1,28 @@
+
+name: GoRest API Testing CI
+
+on: [push]
+
+jobs:
+  api-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run API tests
+        env:
+          GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }}
+        run: |
+          newman run Collection.json \
+            -e Environment.json \
+            --env-var "token=$GOREST_TOKEN"
